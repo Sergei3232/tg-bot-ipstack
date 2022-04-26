@@ -3,7 +3,6 @@ package config
 import (
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
-	"log"
 )
 
 const yamlFile = "./config.yaml"
@@ -13,15 +12,17 @@ type Config struct {
 	TokenTelegramBot string `yaml:"token_telegram"`
 }
 
-func NenConfig() *Config {
+func NenConfig() (*Config, error) {
 	var c Config
 	yamlFile, err := ioutil.ReadFile(yamlFile)
 	if err != nil {
-		log.Printf("yamlFile.Get err   #%v ", err)
+		return nil, err
 	}
+
 	err = yaml.Unmarshal(yamlFile, &c)
 	if err != nil {
-		log.Fatalf("Unmarshal: %v", err)
+		return nil, err
 	}
-	return &c
+
+	return &c, nil
 }
