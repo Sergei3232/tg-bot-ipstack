@@ -1,7 +1,12 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"github.com/Sergei3232/tg-bot-ipstack/internal/config"
+)
 
 func main() {
-	fmt.Println("Привет")
+	configs := config.NenConfig()
+	fmt.Println(configs.DnsDB)
+	fmt.Println(configs.TokenTelegramBot)
 }
