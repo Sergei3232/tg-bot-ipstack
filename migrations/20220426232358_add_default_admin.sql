@@ -1,7 +1,7 @@
 -- +goose Up
 -- +goose StatementBegin
 INSERT INTO rools (name)
-                  VALUES ('admin');
+VALUES ('admin');
 
 INSERT INTO rools (name)
 VALUES ('user');
