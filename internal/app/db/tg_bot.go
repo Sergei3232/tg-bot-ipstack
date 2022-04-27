@@ -62,8 +62,36 @@ func (r *repository) UserExists(userTgID int) (bool, error) {
 	return false, nil
 }
 
-func (r *repository) GetUsersTelegram() ([]int, error) {
-	return []int{}, nil
+func (r *repository) GetUsersTelegram() ([]UserDb, error) {
+	listUsers := make([]UserDb, 0)
+	queryGetUsersTelegram, _, err := r.qb.
+		Select("id, name, telegram_id").
+		From("users").
+		ToSql()
+
+	if err != nil {
+		return []UserDb{}, err
+	}
+
+	rows, errDB := r.db.Query(queryGetUsersTelegram)
+	defer rows.Close()
+
+	if errDB != nil {
+		return []UserDb{}, errDB
+	}
+
+	for rows.Next() {
+		var id, telegramId int
+		var name string
+		errScan := rows.Scan(&id, &name, &telegramId)
+		if errScan != nil {
+			return nil, errScan
+		}
+
+		listUsers = append(listUsers, UserDb{id, name, telegramId})
+	}
+
+	return listUsers, nil
 }
 
 func (r *repository) getIdRool(nameRool string) (int, error) {

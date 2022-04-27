@@ -9,7 +9,7 @@ import (
 type Repository interface {
 	HasAdministratorRools(id int) (bool, error)
 	AddNewUserBot(id int, nameUser string) error
-	GetUsersTelegram() ([]int, error)
+	GetUsersTelegram() ([]UserDb, error)
 	DeleteAdmin(id int) (err error)
 	AddAdmin(id int) (err error)
 	GetUserTelegram(id int) (*UserDb, error)
