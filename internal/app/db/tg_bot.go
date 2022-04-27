@@ -5,6 +5,8 @@ import (
 	sq "github.com/Masterminds/squirrel"
 )
 
+const adminRools string = "admin"
+
 func (r *repository) HasAdministratorRools(userTgId int) (bool, error) {
 
 	return false, nil
@@ -125,6 +127,32 @@ func (r *repository) GetUserTelegram(id int) (*UserDb, error) {
 }
 
 func (r *repository) DeleteAdmin(id int) error {
+	userDb, errU := r.GetUserTelegram(id)
+	if errU != nil {
+		return errU
+	}
+
+	idRoolAdmin, errAd := r.getIdRool(adminRools)
+	if errAd != nil {
+		return errAd
+	}
+
+	queryDeleteAdmin, args, err := r.qb.
+		Delete("user_rools").
+		Where(sq.Eq{"user_id": userDb.Id}).
+		Where(sq.Eq{"rool_id": idRoolAdmin}).
+		ToSql()
+
+	if err != nil {
+		return err
+	}
+
+	rows, errDB := r.db.Query(queryDeleteAdmin, args...)
+	defer rows.Close()
+
+	if errDB != nil {
+		return errDB
+	}
 
 	return nil
 }
@@ -135,14 +163,14 @@ func (r *repository) AddAdmin(id int) error {
 		return errU
 	}
 
-	idAdmin, errAd := r.getIdRool("admin")
+	idRoolAdmin, errAd := r.getIdRool(adminRools)
 	if errAd != nil {
 		return errAd
 	}
 
 	queryAddAdmin, args, err := r.qb.Insert("user_rools").
 		Columns("user_id, rool_id").
-		Values(userDb.Id, idAdmin).
+		Values(userDb.Id, idRoolAdmin).
 		ToSql()
 
 	if err != nil {
