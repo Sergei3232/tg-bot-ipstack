@@ -5,16 +5,41 @@ import (
 )
 
 func (r *repository) HasAdministratorRools(userTgId int) (bool, error) {
+
 	return false, nil
 }
 
 func (r *repository) AddNewUserBot(id int, nameUser string) error {
 
+	ok, err := r.UserExists(id)
+	if err != nil {
+		return err
+	}
+
+	if !ok {
+		queryAddNewUser, args, err := r.qb.Insert("users").
+			Columns("    name,telegram_id").
+			Values(nameUser, id).
+			ToSql()
+
+		if err != nil {
+			return err
+		}
+
+		rows, errDB := r.db.Query(queryAddNewUser, args...)
+		if errDB != nil {
+			return errDB
+		}
+		for rows.Next() {
+			return nil
+		}
+
+	}
 	return nil
 }
 
 func (r *repository) UserExists(userTgID int) (bool, error) {
-	queryUserExists, _, err := r.qb.
+	queryUserExists, args, err := r.qb.
 		Select("id").
 		From("users").
 		Where(sq.Eq{"telegram_id": userTgID}).
@@ -24,7 +49,7 @@ func (r *repository) UserExists(userTgID int) (bool, error) {
 		return false, err
 	}
 
-	rows, errDB := r.db.Query(queryUserExists)
+	rows, errDB := r.db.Query(queryUserExists, args...)
 	if errDB != nil {
 		return false, errDB
 	}
@@ -44,5 +69,6 @@ func (r *repository) DeleteAdmin(id int) error {
 }
 
 func (r *repository) AddAdmin(id int) error {
+	//r.qb.Insert("")
 	return nil
 }
