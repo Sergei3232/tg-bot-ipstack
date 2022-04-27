@@ -12,6 +12,7 @@ type Repository interface {
 	GetUsersTelegram() ([]int, error)
 	DeleteAdmin(id int) (err error)
 	AddAdmin(id int) (err error)
+	GetUserTelegram(id int) (*UserDb, error)
 }
 
 type repository struct {
