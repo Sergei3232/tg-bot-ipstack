@@ -7,20 +7,26 @@ import (
 	"runtime/debug"
 )
 
-type Router struct {
+type Router interface {
+	HandleUpdate(update tgbotapi.Update)
+	handleMessage(msg *tgbotapi.Message)
+	showCommandFormat(inputMessage *tgbotapi.Message)
+}
+
+type ClientRouter struct {
 	bot       *tgbotapi.BotAPI
 	commander *commands.Commander
 }
 
-func NewRouter(bot *tgbotapi.BotAPI) *Router {
-	return &Router{
+func NewRouter(bot *tgbotapi.BotAPI) Router {
+	return &ClientRouter{
 		bot,
 		commands.NewDemoCommander(bot),
 	}
 
 }
 
-func (c *Router) HandleUpdate(update tgbotapi.Update) {
+func (c *ClientRouter) HandleUpdate(update tgbotapi.Update) {
 	defer func() {
 		if panicValue := recover(); panicValue != nil {
 			log.Printf("recovered from panic: %v\n%v", panicValue, string(debug.Stack()))
@@ -33,7 +39,7 @@ func (c *Router) HandleUpdate(update tgbotapi.Update) {
 	}
 }
 
-func (c *Router) handleMessage(msg *tgbotapi.Message) {
+func (c *ClientRouter) handleMessage(msg *tgbotapi.Message) {
 	if !msg.IsCommand() {
 		c.showCommandFormat(msg)
 
@@ -48,7 +54,7 @@ func (c *Router) handleMessage(msg *tgbotapi.Message) {
 	}
 }
 
-func (c *Router) showCommandFormat(inputMessage *tgbotapi.Message) {
+func (c *ClientRouter) showCommandFormat(inputMessage *tgbotapi.Message) {
 	outputMsg := tgbotapi.NewMessage(inputMessage.Chat.ID, "Command format: /{command} {command argument}")
 
 	_, err := c.bot.Send(outputMsg)
