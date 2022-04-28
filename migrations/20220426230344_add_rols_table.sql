@@ -1,6 +1,6 @@
 -- +goose Up
 -- +goose StatementBegin
-create table rools
+create table rols
 (
     id  SERIAL primary key,
     name varchar not null
@@ -9,5 +9,5 @@ create table rools
 
 -- +goose Down
 -- +goose StatementBegin
-drop table if exists rools;
+drop table if exists rols;
 -- +goose StatementEnd
