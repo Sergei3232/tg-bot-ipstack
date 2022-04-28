@@ -7,13 +7,13 @@ import (
 )
 
 type Repository interface {
-	HasAdministratorRools(id int) (bool, error)
+	HasAdministratorRols(id int) (bool, error)
 	AddNewUserBot(id int, nameUser string) error
 	GetUsersTelegram() ([]UserDb, error)
 	DeleteAdmin(id int) (err error)
 	AddAdmin(id int) (err error)
 	GetUserTelegram(id int) (*UserDb, error)
-	getIdRool(name string) (int, error)
+	getIdRol(name string) (int, error)
 }
 
 type repository struct {
