@@ -48,6 +48,8 @@ func (c *ClientRouter) handleMessage(msg *tgbotapi.Message) {
 	}
 
 	switch msg.Command() {
+	case "start":
+		c.commander.Start(msg)
 	case "help":
 		c.commander.Help(msg)
 	default:

@@ -7,6 +7,7 @@ import (
 
 type Commander interface {
 	Help(inputMessage *tgbotapi.Message)
+	Start(inputMessage *tgbotapi.Message)
 }
 
 type Commanders struct {

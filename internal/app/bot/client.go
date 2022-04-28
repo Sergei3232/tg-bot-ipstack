@@ -14,7 +14,7 @@ type TgBot struct {
 
 func NewBotTgClient(config *config.Config) *TgBot {
 
-	db, errDb := db.NewDbConnectClient(config.DnsDB)
+	dbClient, errDb := db.NewDbConnectClient(config.DnsDB)
 	if errDb != nil {
 		log.Panic(errDb)
 	}
@@ -24,5 +24,5 @@ func NewBotTgClient(config *config.Config) *TgBot {
 		log.Panic(err)
 	}
 
-	return &TgBot{db, bot}
+	return &TgBot{dbClient, bot}
 }
