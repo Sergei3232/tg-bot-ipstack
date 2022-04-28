@@ -7,11 +7,43 @@ import (
 
 const adminRools string = "admin"
 
-func (r *repository) HasAdministratorRools(userTgId int) (bool, error) {
+// HasAdministratorRools checking whether the administrator role is available to the user
+func (r *repository) HasAdministratorRols(userTgId int) (bool, error) {
+	userDb, errT := r.GetUserTelegram(userTgId)
+	if errT != nil {
+		return false, errT
+	}
 
+	idRoolAdmin, errAd := r.getIdRol(adminRools)
+	if errAd != nil {
+		return false, errAd
+	}
+
+	queryHasAdministratorRools, args, errQ := r.qb.
+		Select("user_id").
+		From("user_rols").
+		Where(sq.Eq{"user_id": userDb.Id}).
+		Where(sq.Eq{"rool_id": idRoolAdmin}).
+		ToSql()
+
+	if errQ != nil {
+		return false, errQ
+	}
+
+	rows, errDB := r.db.Query(queryHasAdministratorRools, args...)
+	defer rows.Close()
+
+	if errDB != nil {
+		return false, errDB
+	}
+
+	for rows.Next() {
+		return true, nil
+	}
 	return false, nil
 }
 
+// AddNewUserBot adding a new bot user to the database
 func (r *repository) AddNewUserBot(id int, nameUser string) error {
 	ok, err := r.UserExists(id)
 	if err != nil {
@@ -20,7 +52,7 @@ func (r *repository) AddNewUserBot(id int, nameUser string) error {
 
 	if !ok {
 		queryAddNewUser, args, err := r.qb.Insert("users").
-			Columns("    name,telegram_id").
+			Columns("name,telegram_id").
 			Values(nameUser, id).
 			ToSql()
 
@@ -38,6 +70,7 @@ func (r *repository) AddNewUserBot(id int, nameUser string) error {
 	return nil
 }
 
+// UserExists checking the user's existence
 func (r *repository) UserExists(userTgID int) (bool, error) {
 	queryUserExists, args, err := r.qb.
 		Select("id").
@@ -62,6 +95,7 @@ func (r *repository) UserExists(userTgID int) (bool, error) {
 	return false, nil
 }
 
+// GetUsersTelegram get the telegram bot user from the database
 func (r *repository) GetUsersTelegram() ([]UserDb, error) {
 	listUsers := make([]UserDb, 0)
 	queryGetUsersTelegram, _, err := r.qb.
@@ -94,10 +128,11 @@ func (r *repository) GetUsersTelegram() ([]UserDb, error) {
 	return listUsers, nil
 }
 
-func (r *repository) getIdRool(nameRool string) (int, error) {
+// getIdRool
+func (r *repository) getIdRol(nameRool string) (int, error) {
 	queryGetIdRool, args, err := r.qb.
 		Select("id").
-		From("rools").
+		From("rols").
 		Where(sq.Eq{"name": nameRool}).
 		ToSql()
 
@@ -160,13 +195,13 @@ func (r *repository) DeleteAdmin(id int) error {
 		return errU
 	}
 
-	idRoolAdmin, errAd := r.getIdRool(adminRools)
+	idRoolAdmin, errAd := r.getIdRol(adminRools)
 	if errAd != nil {
 		return errAd
 	}
 
 	queryDeleteAdmin, args, err := r.qb.
-		Delete("user_rools").
+		Delete("user_rols").
 		Where(sq.Eq{"user_id": userDb.Id}).
 		Where(sq.Eq{"rool_id": idRoolAdmin}).
 		ToSql()
@@ -191,13 +226,13 @@ func (r *repository) AddAdmin(id int) error {
 		return errU
 	}
 
-	idRoolAdmin, errAd := r.getIdRool(adminRools)
+	idRoolAdmin, errAd := r.getIdRol(adminRools)
 	if errAd != nil {
 		return errAd
 	}
 
-	queryAddAdmin, args, err := r.qb.Insert("user_rools").
-		Columns("user_id, rool_id").
+	queryAddAdmin, args, err := r.qb.Insert("user_rols").
+		Columns("user_id, rol_id").
 		Values(userDb.Id, idRoolAdmin).
 		ToSql()
 
