@@ -7,7 +7,7 @@ import (
 
 const adminRools string = "admin"
 
-// HasAdministratorRools checking whether the administrator role is available to the user
+// HasAdministratorRols checking whether the administrator role is available to the user
 func (r *repository) HasAdministratorRols(userTgId int) (bool, error) {
 	userDb, errT := r.GetUserTelegram(userTgId)
 	if errT != nil {
@@ -128,7 +128,7 @@ func (r *repository) GetUsersTelegram() ([]UserDb, error) {
 	return listUsers, nil
 }
 
-// getIdRool
+// getIdRool get the role id
 func (r *repository) getIdRol(nameRool string) (int, error) {
 	queryGetIdRool, args, err := r.qb.
 		Select("id").
@@ -158,6 +158,7 @@ func (r *repository) getIdRol(nameRool string) (int, error) {
 	return 0, errors.New("role with this id was not found")
 }
 
+// GetUserTelegram get all telegram users
 func (r *repository) GetUserTelegram(id int) (*UserDb, error) {
 	queryGetUserTelegram, args, err := r.qb.
 		Select("id, name, telegram_id").
@@ -189,6 +190,7 @@ func (r *repository) GetUserTelegram(id int) (*UserDb, error) {
 	return nil, errors.New("user does not exist")
 }
 
+// DeleteAdmin remove the administrator role from the user
 func (r *repository) DeleteAdmin(id int) error {
 	userDb, errU := r.GetUserTelegram(id)
 	if errU != nil {
@@ -220,6 +222,7 @@ func (r *repository) DeleteAdmin(id int) error {
 	return nil
 }
 
+// AddAdmin add an administrator role to a user
 func (r *repository) AddAdmin(id int) error {
 	userDb, errU := r.GetUserTelegram(id)
 	if errU != nil {
