@@ -1,6 +1,7 @@
 package router
 
 import (
+	"github.com/Sergei3232/tg-bot-ipstack/internal/app/bot"
 	"github.com/Sergei3232/tg-bot-ipstack/internal/app/commands"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"log"
@@ -14,11 +15,11 @@ type Router interface {
 }
 
 type ClientRouter struct {
-	bot       *tgbotapi.BotAPI
-	commander *commands.Commander
+	bot       *bot.BotTg
+	commander commands.Commander
 }
 
-func NewRouter(bot *tgbotapi.BotAPI) Router {
+func NewRouter(bot *bot.BotTg) Router {
 	return &ClientRouter{
 		bot,
 		commands.NewDemoCommander(bot),

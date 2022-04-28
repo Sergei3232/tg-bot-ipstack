@@ -15,16 +15,16 @@ func main() {
 	}
 
 	tgClient := bot.NewBotTgClient(configs)
-	tgClient.Bot.Debug = true
+	tgClient.Debug = true
 
-	log.Printf("Authorized on account %s", tgClient.Bot.Self.UserName)
+	log.Printf("Authorized on account %s", tgClient.Self.UserName)
 
 	u := tgbotapi.NewUpdate(0)
 	u.Timeout = 60
 
-	routerHandler := routerTg.NewRouter(tgClient.Bot)
+	routerHandler := routerTg.NewRouter(tgClient)
 
-	updates, err := tgClient.Bot.GetUpdatesChan(u)
+	updates, err := tgClient.GetUpdatesChan(u)
 
 	for update := range updates {
 		routerHandler.HandleUpdate(update)

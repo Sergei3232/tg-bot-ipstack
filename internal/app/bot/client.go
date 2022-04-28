@@ -8,8 +8,8 @@ import (
 )
 
 type BotTg struct {
-	Bot *tgbotapi.BotAPI
-	DB  db.Repository
+	DB db.Repository
+	*tgbotapi.BotAPI
 }
 
 func NewBotTgClient(config *config.Config) *BotTg {
@@ -24,5 +24,5 @@ func NewBotTgClient(config *config.Config) *BotTg {
 		log.Panic(err)
 	}
 
-	return &BotTg{bot, db}
+	return &BotTg{db, bot}
 }
