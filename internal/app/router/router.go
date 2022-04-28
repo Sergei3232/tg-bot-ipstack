@@ -15,11 +15,11 @@ type Router interface {
 }
 
 type ClientRouter struct {
-	bot       *bot.BotTg
+	bot       *bot.TgBot
 	commander commands.Commander
 }
 
-func NewRouter(bot *bot.BotTg) Router {
+func NewRouter(bot *bot.TgBot) Router {
 	return &ClientRouter{
 		bot,
 		commands.NewDemoCommander(bot),

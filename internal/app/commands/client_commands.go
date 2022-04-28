@@ -10,10 +10,10 @@ type Commander interface {
 }
 
 type Commanders struct {
-	bot *bot.BotTg
+	bot *bot.TgBot
 }
 
-func NewDemoCommander(bot *bot.BotTg) Commander {
+func NewDemoCommander(bot *bot.TgBot) Commander {
 	return &Commanders{
 		bot: bot,
 	}

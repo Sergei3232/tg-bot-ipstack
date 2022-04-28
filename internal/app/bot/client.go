@@ -7,12 +7,12 @@ import (
 	"log"
 )
 
-type BotTg struct {
+type TgBot struct {
 	DB db.Repository
 	*tgbotapi.BotAPI
 }
 
-func NewBotTgClient(config *config.Config) *BotTg {
+func NewBotTgClient(config *config.Config) *TgBot {
 
 	db, errDb := db.NewDbConnectClient(config.DnsDB)
 	if errDb != nil {
@@ -24,5 +24,5 @@ func NewBotTgClient(config *config.Config) *BotTg {
 		log.Panic(err)
 	}
 
-	return &BotTg{db, bot}
+	return &TgBot{db, bot}
 }
