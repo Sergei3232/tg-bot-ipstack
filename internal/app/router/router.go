@@ -1,17 +1,23 @@
 package router
 
 import (
+	"github.com/Sergei3232/tg-bot-ipstack/internal/app/commands"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"log"
 	"runtime/debug"
 )
 
 type Router struct {
-	bot *tgbotapi.BotAPI
+	bot       *tgbotapi.BotAPI
+	commander *commands.Commander
 }
 
 func NewRouter(bot *tgbotapi.BotAPI) *Router {
-	return &Router{bot}
+	return &Router{
+		bot,
+		commands.NewDemoCommander(bot),
+	}
+
 }
 
 func (c *Router) HandleUpdate(update tgbotapi.Update) {
@@ -35,8 +41,8 @@ func (c *Router) handleMessage(msg *tgbotapi.Message) {
 	}
 
 	switch msg.Command() {
-	case "start":
-
+	case "help":
+		c.commander.Help(msg)
 	default:
 		log.Printf("Unknown command - %s", msg.Command())
 	}
