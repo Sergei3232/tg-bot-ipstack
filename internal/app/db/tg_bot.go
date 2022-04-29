@@ -234,20 +234,27 @@ func (r *repository) AddAdmin(id int) error {
 		return errAd
 	}
 
-	queryAddAdmin, args, err := r.qb.Insert("user_rols").
-		Columns("user_id, rol_id").
-		Values(userDb.Id, idRoolAdmin).
-		ToSql()
-
-	if err != nil {
-		return err
+	ok, errRol := r.recordRolExists(userDb.Id, idRoolAdmin)
+	if errRol != nil {
+		return errRol
 	}
 
-	rows, errDB := r.db.Query(queryAddAdmin, args...)
-	defer rows.Close()
+	if !ok {
+		queryAddAdmin, args, err := r.qb.Insert("user_rols").
+			Columns("user_id, rol_id").
+			Values(userDb.Id, idRoolAdmin).
+			ToSql()
 
-	if errDB != nil {
-		return errDB
+		if err != nil {
+			return err
+		}
+
+		rows, errDB := r.db.Query(queryAddAdmin, args...)
+		defer rows.Close()
+
+		if errDB != nil {
+			return errDB
+		}
 	}
 
 	return nil
