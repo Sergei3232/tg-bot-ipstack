@@ -8,6 +8,7 @@ import (
 type Commander interface {
 	Help(inputMessage *tgbotapi.Message)
 	Start(inputMessage *tgbotapi.Message)
+	AddAdmin(inputMessage *tgbotapi.Message)
 }
 
 type Commanders struct {
