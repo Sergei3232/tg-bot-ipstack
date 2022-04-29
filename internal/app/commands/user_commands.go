@@ -7,14 +7,24 @@ import (
 
 const (
 	welcomeMessage    string = "Добро пожаловать! \nДля помощи введите команду help"
-	listCommandToUser string = "Пользовательские команды:\n" +
-		"chekIp - Проверка сайта по ip\n" +
-		"user_history - История уникальных пользовательских запросов\n" +
+	listCommandToUser string = "Команды пользователя:\n" +
+		"chekIp [ip] - Проверка сайта по ip\n" +
+		"userHistory - История уникальных пользовательских запросов по его telegram id\n" +
 		"Command format: /{command} {command argument}"
+	listCommandToAdmin string = "Команды администратора:\n" +
+		"addAdmin [telegram id]- Добавление пользователю роли администратора по его telegram id\n" +
+		"deleteAdmin [telegram id]- Удаление у пользователя роли администратора по его telegram id\n" +
+		"userHistoryAdm [telegram id] - Вывод всех айпи что проверял пользователь по его telegram id" +
+		"messageUsers [telegram id] - Отправить сообщение всем пользователям бота"
 )
 
 func (c *Commanders) Help(inputMessage *tgbotapi.Message) {
 	outputMsgText := listCommandToUser
+
+	if ok, _ := c.bot.DB.HasAdministratorRols(inputMessage.From.ID); ok {
+		outputMsgText += "\n\n" + listCommandToAdmin
+	}
+
 	msg := tgbotapi.NewMessage(inputMessage.Chat.ID, outputMsgText)
 
 	_, err := c.bot.Send(msg)
