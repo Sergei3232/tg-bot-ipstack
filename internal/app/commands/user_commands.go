@@ -15,7 +15,7 @@ const (
 		"addAdmin [telegram id]- Добавление пользователю роли администратора по его telegram id\n" +
 		"deleteAdmin [telegram id]- Удаление у пользователя роли администратора по его telegram id\n" +
 		"userHistoryAdm [telegram id] - Вывод всех айпи что проверял пользователь по его telegram id" +
-		"messageUsers [telegram id] - Отправить сообщение всем пользователям бота"
+		"messageToUsers [telegram id] - Отправить сообщение всем пользователям бота"
 )
 
 func (c *Commanders) Start(inputMessage *tgbotapi.Message) {

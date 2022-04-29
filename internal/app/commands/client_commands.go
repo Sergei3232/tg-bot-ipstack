@@ -10,6 +10,7 @@ type Commander interface {
 	Start(inputMessage *tgbotapi.Message)
 	AddAdmin(inputMessage *tgbotapi.Message)
 	DeleteAdmin(inputMessage *tgbotapi.Message)
+	MessageUsers(inputMessage *tgbotapi.Message)
 }
 
 type Commanders struct {

@@ -96,7 +96,15 @@ func (r *repository) UserExists(userTgID int) (bool, error) {
 }
 
 // GetUsersTelegram get the telegram bot user from the database
-func (r *repository) GetUsersTelegram() ([]UserDb, error) {
+func (r *repository) GetUsersTelegram(idAdmin int) ([]UserDb, error) {
+	ok, err := r.HasAdministratorRols(idAdmin)
+	if err != nil {
+		return []UserDb{}, err
+	}
+	if !ok {
+		return []UserDb{}, errors.New("Команда недоступна!")
+	}
+
 	listUsers := make([]UserDb, 0)
 	queryGetUsersTelegram, _, err := r.qb.
 		Select("id, name, telegram_id").

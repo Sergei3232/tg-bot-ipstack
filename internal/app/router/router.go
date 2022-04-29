@@ -43,7 +43,6 @@ func (c *ClientRouter) HandleUpdate(update tgbotapi.Update) {
 func (c *ClientRouter) handleMessage(msg *tgbotapi.Message) {
 	if !msg.IsCommand() {
 		c.showCommandFormat(msg)
-
 		return
 	}
 
@@ -56,6 +55,8 @@ func (c *ClientRouter) handleMessage(msg *tgbotapi.Message) {
 		c.commander.AddAdmin(msg)
 	case "deleteAdmin":
 		c.commander.DeleteAdmin(msg)
+	case "messageToUsers":
+		c.commander.MessageUsers(msg)
 	default:
 		log.Printf("Unknown command - %s", msg.Command())
 	}
