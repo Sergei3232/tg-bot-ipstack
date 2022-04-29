@@ -23,7 +23,7 @@ func (r *repository) HasAdministratorRols(userTgId int) (bool, error) {
 		Select("user_id").
 		From("user_rols").
 		Where(sq.Eq{"user_id": userDb.Id}).
-		Where(sq.Eq{"rool_id": idRoolAdmin}).
+		Where(sq.Eq{"rol_id": idRoolAdmin}).
 		ToSql()
 
 	if errQ != nil {
