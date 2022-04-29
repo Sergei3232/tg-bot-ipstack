@@ -14,6 +14,7 @@ type Repository interface {
 	AddAdmin(id int) (err error)
 	GetUserTelegram(id int) (*UserDb, error)
 	getIdRol(name string) (int, error)
+	recordRolExists(idUser, idRol int) (bool, error)
 }
 
 type repository struct {
