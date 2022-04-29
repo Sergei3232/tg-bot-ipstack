@@ -18,11 +18,11 @@ const (
 		"messageUsers [telegram id] - Отправить сообщение всем пользователям бота"
 )
 
-func (c *Commanders) Help(inputMessage *tgbotapi.Message) {
-	outputMsgText := listCommandToUser
+func (c *Commanders) Start(inputMessage *tgbotapi.Message) {
+	outputMsgText := welcomeMessage
 
-	if ok, _ := c.bot.DB.HasAdministratorRols(inputMessage.From.ID); ok {
-		outputMsgText += "\n\n" + listCommandToAdmin
+	if err := c.bot.DB.AddNewUserBot(inputMessage.From.ID, inputMessage.From.UserName); err != nil {
+		log.Println(err.Error())
 	}
 
 	msg := tgbotapi.NewMessage(inputMessage.Chat.ID, outputMsgText)
@@ -33,8 +33,13 @@ func (c *Commanders) Help(inputMessage *tgbotapi.Message) {
 	}
 }
 
-func (c *Commanders) Start(inputMessage *tgbotapi.Message) {
-	outputMsgText := welcomeMessage
+func (c *Commanders) Help(inputMessage *tgbotapi.Message) {
+	outputMsgText := listCommandToUser
+
+	if ok, _ := c.bot.DB.HasAdministratorRols(inputMessage.From.ID); ok {
+		outputMsgText += "\n\n" + listCommandToAdmin
+	}
+
 	msg := tgbotapi.NewMessage(inputMessage.Chat.ID, outputMsgText)
 
 	_, err := c.bot.Send(msg)
