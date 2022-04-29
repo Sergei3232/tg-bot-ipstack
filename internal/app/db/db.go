@@ -11,7 +11,7 @@ type Repository interface {
 	AddNewUserBot(id int, nameUser string) error
 	GetUsersTelegram() ([]UserDb, error)
 	DeleteAdmin(id int) (err error)
-	AddAdmin(id int) (err error)
+	AddAdmin(idUser, idAdmin int) error
 	GetUserTelegram(id int) (*UserDb, error)
 	getIdRol(name string) (int, error)
 	recordRolExists(idUser, idRol int) (bool, error)

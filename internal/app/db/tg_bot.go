@@ -223,8 +223,16 @@ func (r *repository) DeleteAdmin(id int) error {
 }
 
 // AddAdmin add an administrator role to a user
-func (r *repository) AddAdmin(id int) error {
-	userDb, errU := r.GetUserTelegram(id)
+func (r *repository) AddAdmin(idUser, idAdmin int) error {
+	ok, err := r.HasAdministratorRols(idAdmin)
+	if err != nil {
+		return err
+	}
+	if !ok {
+		return errors.New("Команда недоступна!")
+	}
+
+	userDb, errU := r.GetUserTelegram(idUser)
 	if errU != nil {
 		return errU
 	}

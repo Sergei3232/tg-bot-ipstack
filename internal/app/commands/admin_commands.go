@@ -14,8 +14,8 @@ func (c *Commanders) AddAdmin(inputMessage *tgbotapi.Message) {
 	if err != nil {
 		outputMsgText = "Ошибка передачи параметра!"
 	} else {
-		if err := c.bot.DB.AddAdmin(argUserTelegram); err != nil {
-			outputMsgText = "Ошибка выполнения команды!"
+		if err := c.bot.DB.AddAdmin(argUserTelegram, inputMessage.From.ID); err != nil {
+			outputMsgText = err.Error()
 		} else {
 			outputMsgText = "Команда успешно выполнена!"
 		}
