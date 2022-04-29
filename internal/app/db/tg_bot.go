@@ -252,3 +252,29 @@ func (r *repository) AddAdmin(id int) error {
 
 	return nil
 }
+
+// recordRolExists сhecking the existence of a user role
+func (r *repository) recordRolExists(idUser, idRol int) (bool, error) {
+	queryUserExists, args, err := r.qb.
+		Select("id").
+		From("user_rols").
+		Where(sq.Eq{"user_id": idUser}).
+		Where(sq.Eq{"rol_id": idRol}).
+		ToSql()
+
+	if err != nil {
+		return false, err
+	}
+
+	rows, errDB := r.db.Query(queryUserExists, args...)
+	defer rows.Close()
+
+	if errDB != nil {
+		return false, errDB
+	}
+
+	for rows.Next() {
+		return true, nil
+	}
+	return false, nil
+}
