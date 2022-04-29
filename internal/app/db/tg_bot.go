@@ -191,8 +191,16 @@ func (r *repository) GetUserTelegram(id int) (*UserDb, error) {
 }
 
 // DeleteAdmin remove the administrator role from the user
-func (r *repository) DeleteAdmin(id int) error {
-	userDb, errU := r.GetUserTelegram(id)
+func (r *repository) DeleteAdmin(idUser, idAdmin int) error {
+	ok, err := r.HasAdministratorRols(idAdmin)
+	if err != nil {
+		return err
+	}
+	if !ok {
+		return errors.New("Команда недоступна!")
+	}
+
+	userDb, errU := r.GetUserTelegram(idUser)
 	if errU != nil {
 		return errU
 	}
@@ -205,7 +213,7 @@ func (r *repository) DeleteAdmin(id int) error {
 	queryDeleteAdmin, args, err := r.qb.
 		Delete("user_rols").
 		Where(sq.Eq{"user_id": userDb.Id}).
-		Where(sq.Eq{"rool_id": idRoolAdmin}).
+		Where(sq.Eq{"rol_id": idRoolAdmin}).
 		ToSql()
 
 	if err != nil {

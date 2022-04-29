@@ -54,6 +54,8 @@ func (c *ClientRouter) handleMessage(msg *tgbotapi.Message) {
 		c.commander.Help(msg)
 	case "addAdmin":
 		c.commander.AddAdmin(msg)
+	case "deleteAdmin":
+		c.commander.DeleteAdmin(msg)
 	default:
 		log.Printf("Unknown command - %s", msg.Command())
 	}

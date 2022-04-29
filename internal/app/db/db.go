@@ -10,7 +10,7 @@ type Repository interface {
 	HasAdministratorRols(id int) (bool, error)
 	AddNewUserBot(id int, nameUser string) error
 	GetUsersTelegram() ([]UserDb, error)
-	DeleteAdmin(id int) (err error)
+	DeleteAdmin(idUser, idAdmin int) error
 	AddAdmin(idUser, idAdmin int) error
 	GetUserTelegram(id int) (*UserDb, error)
 	getIdRol(name string) (int, error)
