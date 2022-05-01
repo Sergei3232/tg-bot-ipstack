@@ -1,29 +1,29 @@
 -- +goose Up
 -- +goose StatementBegin
-INSERT INTO rols (name)
-VALUES ('admin');
+insert into rols (name)
+values ('admin');
 
-INSERT INTO rols (name)
-VALUES ('user');
+insert into rols (name)
+values ('user');
 
-INSERT INTO users (name, telegram_id)
-VALUES ( 'MrS','519588080');
+insert into users (name, telegram_id)
+values ( 'MrS','519588080');
 
-INSERT INTO user_rols (user_id, rol_id)
-VALUES ('1', '1');
+insert into user_rols (user_id, rol_id)
+values ('1', '1');
 -- +goose StatementEnd
 
 -- +goose Down
 -- +goose StatementBegin
-DELETE FROM rols
-    WHERE name = 'admin';
+delete from rols
+    where name = 'admin';
 
-DELETE FROM rols
-    WHERE name = 'user';
+delete from rols
+    where name = 'user';
 
-DELETE FROM users
-    WHERE name = 'MrS' and telegram_id = '519588080';
+delete from users
+    where name = 'MrS' and telegram_id = '519588080';
 
-DELETE FROM user_rols
-    WHERE user_id = '1' and rol_id = '1';
+delete from user_rols
+    where user_id = '1' and rol_id = '1';
 -- +goose StatementEnd
