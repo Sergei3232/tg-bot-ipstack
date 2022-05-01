@@ -3,6 +3,7 @@ package db
 import (
 	"errors"
 	sq "github.com/Masterminds/squirrel"
+	"time"
 )
 
 const adminRools string = "admin"
@@ -308,4 +309,29 @@ func (r *repository) recordRolExists(idUser, idRol int) (bool, error) {
 		return true, nil
 	}
 	return false, nil
+}
+
+//AddUserHistoryQuery add Adding a user request history
+func (r *repository) AddUserHistoryQuery(
+	idUser int,
+	ip, queryResult string,
+	timeQuery time.Duration) error {
+
+	queryAddUserHistory, args, err := r.qb.Insert("user_request_history").
+		Columns("userid, ip, query_result, time_query").
+		Values(idUser, ip, queryResult, timeQuery).
+		ToSql()
+
+	if err != nil {
+		return err
+	}
+
+	rows, errDB := r.db.Query(queryAddUserHistory, args...)
+	defer rows.Close()
+
+	if errDB != nil {
+		return errDB
+	}
+
+	return nil
 }

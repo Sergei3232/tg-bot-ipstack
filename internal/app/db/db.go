@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	sq "github.com/Masterminds/squirrel"
 	_ "github.com/lib/pq"
+	"time"
 )
 
 type Repository interface {
@@ -15,6 +16,7 @@ type Repository interface {
 	GetUserTelegram(id int) (*UserDb, error)
 	getIdRol(name string) (int, error)
 	recordRolExists(idUser, idRol int) (bool, error)
+	AddUserHistoryQuery(idUser int, ip, queryResult string, timeQuery time.Duration) error
 }
 
 type repository struct {
