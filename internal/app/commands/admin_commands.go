@@ -72,3 +72,25 @@ func (c *Commanders) MessageUsers(inputMessage *tgbotapi.Message) {
 		}
 	}
 }
+
+func (c *Commanders) GetHistoryUserQueryAdmin(inputMessage *tgbotapi.Message) {
+	var outputMsgText string
+	argument := inputMessage.CommandArguments()
+	argUserTelegram, err := strconv.Atoi(argument)
+	if err != nil {
+		outputMsgText = "Ошибка передачи параметра!"
+	}
+
+	outputMsgText, errQuery := c.bot.DB.GetHistoryUserQueryAdmin(argUserTelegram, inputMessage.From.ID)
+
+	if errQuery != nil {
+		log.Println(errQuery)
+	}
+
+	msg := tgbotapi.NewMessage(inputMessage.Chat.ID, outputMsgText)
+
+	_, errSend := c.bot.Send(msg)
+	if errSend != nil {
+		log.Printf("Commander.Help: error sending reply message to chat - %v", err)
+	}
+}

@@ -60,6 +60,10 @@ func (c *ClientRouter) handleMessage(msg *tgbotapi.Message) {
 		c.commander.MessageUsers(msg)
 	case "chekIp":
 		c.commander.ChekIp(msg)
+	case "userHistory":
+		c.commander.GetHistoryUserQuery(msg)
+	case "userHistoryAdm":
+		c.commander.GetHistoryUserQueryAdmin(msg)
 	default:
 		log.Printf("Unknown command - %s", msg.Command())
 	}

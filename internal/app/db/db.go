@@ -17,7 +17,8 @@ type Repository interface {
 	getIdRol(name string) (int, error)
 	recordRolExists(idUser, idRol int) (bool, error)
 	AddUserHistoryQuery(idUser int, ip, queryResult string, timeQuery time.Time) error
-	GetHistoryUserQuery(idUser int) ([]string, error)
+	GetHistoryUserQuery(idUser int) (string, error)
+	GetHistoryUserQueryAdmin(idUser, adminId int) (string, error)
 }
 
 type repository struct {

@@ -33,7 +33,7 @@ func (c *Commanders) Start(inputMessage *tgbotapi.Message) {
 
 	_, err := c.bot.Send(msg)
 	if err != nil {
-		log.Printf("Commander.Help: error sending reply message to chat - %v", err)
+		log.Printf("Commander.Start: error sending reply message to chat - %v", err)
 	}
 }
 
@@ -78,7 +78,7 @@ func (c *Commanders) ChekIp(inputMessage *tgbotapi.Message) {
 	}
 
 	result, err := c.clietnIp.GetInfoIp(ip)
-	if err != nil{
+	if err != nil {
 		log.Println(err)
 	}
 	textResult := result.ToString()
@@ -100,5 +100,20 @@ func (c *Commanders) validationIpAdress(ip string) bool {
 		return true
 	} else {
 		return false
+	}
+}
+
+func (c *Commanders) GetHistoryUserQuery(inputMessage *tgbotapi.Message) {
+	listText, err := c.bot.DB.GetHistoryUserQuery(inputMessage.From.ID)
+
+	if err != nil {
+		log.Println(err)
+	}
+
+	msg := tgbotapi.NewMessage(inputMessage.Chat.ID, listText)
+
+	_, errSend := c.bot.Send(msg)
+	if errSend != nil {
+		log.Printf("Commander.Help: error sending reply message to chat - %v", err)
 	}
 }

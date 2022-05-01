@@ -336,23 +336,30 @@ func (r *repository) AddUserHistoryQuery(
 	return nil
 }
 
-func (r *repository) GetHistoryUserQuery(idUser int) ([]string, error){
-	listQueryUser := make([]string, 0)
+//GetHistoryUserQuery Getting a list of user requests
+func (r *repository) GetHistoryUserQuery(idUser int) (string, error) {
+	var listQueryUser string
+
+	userDb, errU := r.GetUserTelegram(idUser)
+	if errU != nil {
+		return "", errU
+	}
+
 	queryGetUserTelegram, args, err := r.qb.
 		Select("ip, query_result").
 		From("user_request_history").
-		Where(sq.Eq{"userid": idUser}).
-		Having("ip", "query_result").
+		Where(sq.Eq{"userid": userDb.Id}).
+		GroupBy("ip", "query_result").
 		ToSql()
 
 	if err != nil {
-		return []string{}, err
+		return "", err
 	}
 
 	rows, errDB := r.db.Query(queryGetUserTelegram, args...)
 	defer rows.Close()
 	if errDB != nil {
-		return nil, errDB
+		return "", errDB
 	}
 
 	for rows.Next() {
@@ -360,9 +367,55 @@ func (r *repository) GetHistoryUserQuery(idUser int) ([]string, error){
 		errScan := rows.Scan(&ip, &query)
 
 		if errScan != nil {
-			return nil, errScan
+			return "", errScan
 		}
-		listQueryUser = append(listQueryUser, ip+"\n"+ query+"\n")
+		listQueryUser += ip + "\n" + query + "\n" + "------------------------" + "\n"
+	}
+
+	return listQueryUser, nil
+}
+
+func (r *repository) GetHistoryUserQueryAdmin(idUser, adminId int) (string, error) {
+	var listQueryUser string
+
+	userDb, errU := r.GetUserTelegram(idUser)
+	if errU != nil {
+		return "", errU
+	}
+
+	ok, err := r.HasAdministratorRols(adminId)
+	if err != nil {
+		return "", err
+	}
+	if !ok {
+		return "", errors.New("Команда недоступна!")
+	}
+
+	queryGetUserTelegram, args, err := r.qb.
+		Select("ip").
+		From("user_request_history").
+		Where(sq.Eq{"userid": userDb.Id}).
+		GroupBy("ip").
+		ToSql()
+
+	if err != nil {
+		return "", err
+	}
+
+	rows, errDB := r.db.Query(queryGetUserTelegram, args...)
+	defer rows.Close()
+	if errDB != nil {
+		return "", errDB
+	}
+
+	for rows.Next() {
+		var ip string
+		errScan := rows.Scan(&ip)
+
+		if errScan != nil {
+			return "", errScan
+		}
+		listQueryUser += ip + "\n" + "------------------------" + "\n"
 	}
 
 	return listQueryUser, nil
