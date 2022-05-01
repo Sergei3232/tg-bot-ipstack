@@ -5,6 +5,7 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"log"
 	"regexp"
+	"time"
 )
 
 const (
@@ -53,9 +54,9 @@ func (c *Commanders) Help(inputMessage *tgbotapi.Message) {
 
 func (c *Commanders) ChekIp(inputMessage *tgbotapi.Message) {
 	var outputMsgText string
-	arguments := inputMessage.CommandArguments()
+	ip := inputMessage.CommandArguments()
 
-	ok, err := regexp.MatchString(ipRegExp, arguments)
+	ok, err := regexp.MatchString(ipRegExp, ip)
 	if err != nil {
 		log.Panicln(err.Error())
 	}
@@ -71,6 +72,15 @@ func (c *Commanders) ChekIp(inputMessage *tgbotapi.Message) {
 		log.Panicln(errors.New("error. IP is not valid"))
 		return
 	}
+
+	user, err := c.bot.DB.GetUserTelegram(inputMessage.From.ID)
+	if err != nil {
+		log.Println(err)
+	}
+	textResult := "Test"
+	timeQuery := time.Now()
+
+	c.bot.DB.AddUserHistoryQuery(user.Id, ip, textResult, timeQuery)
 
 	log.Println(outputMsgText)
 }

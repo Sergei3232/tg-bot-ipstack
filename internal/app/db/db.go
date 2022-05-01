@@ -16,7 +16,7 @@ type Repository interface {
 	GetUserTelegram(id int) (*UserDb, error)
 	getIdRol(name string) (int, error)
 	recordRolExists(idUser, idRol int) (bool, error)
-	AddUserHistoryQuery(idUser int, ip, queryResult string, timeQuery time.Duration) error
+	AddUserHistoryQuery(idUser int, ip, queryResult string, timeQuery time.Time) error
 }
 
 type repository struct {

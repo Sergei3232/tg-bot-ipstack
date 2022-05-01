@@ -315,7 +315,7 @@ func (r *repository) recordRolExists(idUser, idRol int) (bool, error) {
 func (r *repository) AddUserHistoryQuery(
 	idUser int,
 	ip, queryResult string,
-	timeQuery time.Duration) error {
+	timeQuery time.Time) error {
 
 	queryAddUserHistory, args, err := r.qb.Insert("user_request_history").
 		Columns("userid, ip, query_result, time_query").
