@@ -10,7 +10,8 @@ const yamlFile = "./config.yaml"
 type Config struct {
 	DnsDB            string `yaml:"bot_db"`
 	TokenTelegramBot string `yaml:"token_telegram"`
-	AccessKey        string `yaml:"access_key""`
+	AccessKey        string `yaml:"access_key"`
+	HostNameIp       string `yaml:"host_name_ip"`
 }
 
 func NenConfig() (*Config, error) {

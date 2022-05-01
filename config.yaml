@@ -1,5 +1,6 @@
-bot_db: postgresql://root:111@localhost:5439/bot_db?sslmode=disable
+bot_db:
 
 token_telegram:
 
 access_key:
+host_name_ip:
