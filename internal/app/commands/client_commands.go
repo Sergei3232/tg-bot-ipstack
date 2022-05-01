@@ -11,6 +11,7 @@ type Commander interface {
 	AddAdmin(inputMessage *tgbotapi.Message)
 	DeleteAdmin(inputMessage *tgbotapi.Message)
 	MessageUsers(inputMessage *tgbotapi.Message)
+	ChekIp(inputMessage *tgbotapi.Message)
 }
 
 type Commanders struct {
