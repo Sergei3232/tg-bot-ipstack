@@ -335,3 +335,35 @@ func (r *repository) AddUserHistoryQuery(
 
 	return nil
 }
+
+func (r *repository) GetHistoryUserQuery(idUser int) ([]string, error){
+	listQueryUser := make([]string, 0)
+	queryGetUserTelegram, args, err := r.qb.
+		Select("ip, query_result").
+		From("user_request_history").
+		Where(sq.Eq{"userid": idUser}).
+		Having("ip", "query_result").
+		ToSql()
+
+	if err != nil {
+		return []string{}, err
+	}
+
+	rows, errDB := r.db.Query(queryGetUserTelegram, args...)
+	defer rows.Close()
+	if errDB != nil {
+		return nil, errDB
+	}
+
+	for rows.Next() {
+		var ip, query string
+		errScan := rows.Scan(&ip, &query)
+
+		if errScan != nil {
+			return nil, errScan
+		}
+		listQueryUser = append(listQueryUser, ip+"\n"+ query+"\n")
+	}
+
+	return listQueryUser, nil
+}

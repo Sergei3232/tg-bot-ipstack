@@ -2,6 +2,7 @@ package commands
 
 import (
 	"github.com/Sergei3232/tg-bot-ipstack/internal/app/bot"
+	"github.com/Sergei3232/tg-bot-ipstack/internal/app/ipstack"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 )
 
@@ -15,11 +16,13 @@ type Commander interface {
 }
 
 type Commanders struct {
-	bot *bot.TgBot
+	bot      *bot.TgBot
+	clietnIp ipstack.QueryIP
 }
 
-func NewDemoCommander(bot *bot.TgBot) Commander {
+func NewDemoCommander(bot *bot.TgBot, clietnIp ipstack.QueryIP) Commander {
 	return &Commanders{
-		bot: bot,
+		bot:      bot,
+		clietnIp: clietnIp,
 	}
 }

@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/Sergei3232/tg-bot-ipstack/internal/app/bot"
+	"github.com/Sergei3232/tg-bot-ipstack/internal/app/ipstack"
 	routerTg "github.com/Sergei3232/tg-bot-ipstack/internal/app/router"
 	"github.com/Sergei3232/tg-bot-ipstack/internal/config"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
@@ -22,7 +23,9 @@ func main() {
 	u := tgbotapi.NewUpdate(0)
 	u.Timeout = 60
 
-	routerHandler := routerTg.NewRouter(tgClient)
+	ipstackClient := ipstack.NewClientIP(configs.HostNameIp, configs.AccessKey)
+
+	routerHandler := routerTg.NewRouter(tgClient, ipstackClient)
 
 	updates, err := tgClient.GetUpdatesChan(u)
 

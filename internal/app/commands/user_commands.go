@@ -53,7 +53,6 @@ func (c *Commanders) Help(inputMessage *tgbotapi.Message) {
 }
 
 func (c *Commanders) ChekIp(inputMessage *tgbotapi.Message) {
-	var outputMsgText string
 	ip := inputMessage.CommandArguments()
 
 	ok, err := regexp.MatchString(ipRegExp, ip)
@@ -77,12 +76,22 @@ func (c *Commanders) ChekIp(inputMessage *tgbotapi.Message) {
 	if err != nil {
 		log.Println(err)
 	}
-	textResult := "Test"
+
+	result, err := c.clietnIp.GetInfoIp(ip)
+	if err != nil{
+		log.Println(err)
+	}
+	textResult := result.ToString()
 	timeQuery := time.Now()
 
 	c.bot.DB.AddUserHistoryQuery(user.Id, ip, textResult, timeQuery)
 
-	log.Println(outputMsgText)
+	msg := tgbotapi.NewMessage(inputMessage.Chat.ID, textResult)
+
+	_, errSend := c.bot.Send(msg)
+	if errSend != nil {
+		log.Printf("Commander.Help: error sending reply message to chat - %v", err)
+	}
 }
 
 func (c *Commanders) validationIpAdress(ip string) bool {

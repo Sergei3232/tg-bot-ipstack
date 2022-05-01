@@ -3,6 +3,7 @@ package router
 import (
 	"github.com/Sergei3232/tg-bot-ipstack/internal/app/bot"
 	"github.com/Sergei3232/tg-bot-ipstack/internal/app/commands"
+	"github.com/Sergei3232/tg-bot-ipstack/internal/app/ipstack"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"log"
 	"runtime/debug"
@@ -19,10 +20,10 @@ type ClientRouter struct {
 	commander commands.Commander
 }
 
-func NewRouter(bot *bot.TgBot) Router {
+func NewRouter(bot *bot.TgBot, clietnIp ipstack.QueryIP) Router {
 	return &ClientRouter{
 		bot,
-		commands.NewDemoCommander(bot),
+		commands.NewDemoCommander(bot, clietnIp),
 	}
 
 }
