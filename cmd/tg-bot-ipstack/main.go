@@ -48,7 +48,4 @@ func main() {
 	for {
 	}
 
-	//for update := range updates {
-	//	routerHandler.HandleUpdate(update)
-	//}
 }
