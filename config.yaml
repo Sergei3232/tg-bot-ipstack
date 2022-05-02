@@ -4,3 +4,6 @@ token_telegram:
 
 access_key:
 host_name_ip:
+
+bind_addr:
+log_level:
