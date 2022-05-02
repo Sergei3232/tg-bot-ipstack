@@ -19,6 +19,7 @@ type Repository interface {
 	AddUserHistoryQuery(idUser int, ip, queryResult string, timeQuery time.Time) error
 	GetHistoryUserQuery(idUser int) (string, error)
 	GetHistoryUserQueryAdmin(idUser, adminId int) (string, error)
+	GetListUsers() ([]UserDb, error)
 }
 
 type repository struct {

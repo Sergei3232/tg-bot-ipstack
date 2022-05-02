@@ -1,7 +1,7 @@
 package db
 
 type UserDb struct {
-	Id         int
-	Name       string
-	TelegramId int
+	Id         int    `json:"id"`
+	Name       string `json:"name"`
+	TelegramId int    `json:"telegram_id"`
 }

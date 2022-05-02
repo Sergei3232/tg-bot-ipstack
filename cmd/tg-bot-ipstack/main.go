@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/Sergei3232/tg-bot-ipstack/internal/app/apiserver"
 	"github.com/Sergei3232/tg-bot-ipstack/internal/app/bot"
 	"github.com/Sergei3232/tg-bot-ipstack/internal/app/ipstack"
 	routerTg "github.com/Sergei3232/tg-bot-ipstack/internal/app/router"
@@ -14,6 +15,15 @@ func main() {
 	if err != nil {
 		log.Panicln(err)
 	}
+
+	serverAPI := apiserver.NewAPIServer(configs)
+
+	go func() {
+		errAPI := serverAPI.Start()
+		if errAPI != nil {
+			log.Fatalln(errAPI)
+		}
+	}()
 
 	tgClient := bot.NewBotTgClient(configs)
 	tgClient.Debug = true
@@ -29,7 +39,16 @@ func main() {
 
 	updates, err := tgClient.GetUpdatesChan(u)
 
-	for update := range updates {
-		routerHandler.HandleUpdate(update)
+	go func() {
+		for update := range updates {
+			routerHandler.HandleUpdate(update)
+		}
+	}()
+
+	for {
 	}
+
+	//for update := range updates {
+	//	routerHandler.HandleUpdate(update)
+	//}
 }

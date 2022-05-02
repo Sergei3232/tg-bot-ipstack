@@ -12,6 +12,8 @@ type Config struct {
 	TokenTelegramBot string `yaml:"token_telegram"`
 	AccessKey        string `yaml:"access_key"`
 	HostNameIp       string `yaml:"host_name_ip"`
+	BindAddr         string `yaml:"bind_addr"`
+	LogLevel         string `yaml:"log_level"`
 }
 
 func NenConfig() (*Config, error) {

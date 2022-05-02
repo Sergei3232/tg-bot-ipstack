@@ -420,3 +420,37 @@ func (r *repository) GetHistoryUserQueryAdmin(idUser, adminId int) (string, erro
 
 	return listQueryUser, nil
 }
+
+//GetListUsers Get a list of users to GET request
+func (r *repository) GetListUsers() ([]UserDb, error) {
+
+	listUsers := make([]UserDb, 0)
+	queryGetUsersTelegram, _, err := r.qb.
+		Select("id, name, telegram_id").
+		From("users").
+		ToSql()
+
+	if err != nil {
+		return []UserDb{}, err
+	}
+
+	rows, errDB := r.db.Query(queryGetUsersTelegram)
+	defer rows.Close()
+
+	if errDB != nil {
+		return []UserDb{}, errDB
+	}
+
+	for rows.Next() {
+		var id, telegramId int
+		var name string
+		errScan := rows.Scan(&id, &name, &telegramId)
+		if errScan != nil {
+			return nil, errScan
+		}
+
+		listUsers = append(listUsers, UserDb{id, name, telegramId})
+	}
+
+	return listUsers, nil
+}
