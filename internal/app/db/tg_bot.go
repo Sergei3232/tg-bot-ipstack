@@ -186,15 +186,15 @@ func (r *repository) GetUserTelegram(id int) (*UserDb, error) {
 	}
 
 	for rows.Next() {
-		var id, telegramId int
+		var idHistory, telegramId int
 		var name string
-		errScan := rows.Scan(&id, &name, &telegramId)
+		errScan := rows.Scan(&idHistory, &name, &telegramId)
 
 		if errScan != nil {
 			return nil, errScan
 		}
 
-		return &UserDb{id, name, telegramId}, nil
+		return &UserDb{idHistory, name, telegramId}, nil
 	}
 	return nil, errors.New("user does not exist")
 }
@@ -454,4 +454,50 @@ func (r *repository) GetListUsers() ([]UserDb, error) {
 	}
 
 	return listUsers, nil
+}
+
+//GetUserRequestHistory Get user request history to the GET request
+func (r *repository) GetUserRequestHistory(idUser int) (HistoryUser, error) {
+	listQuery := HistoryUser{}
+
+	userDb, errU := r.GetUserTelegram(idUser)
+	if errU != nil {
+		return HistoryUser{}, errU
+	}
+	listQuery.User = *userDb
+	listQuery.ListQuery = make([]UserRequestHistory, 0)
+
+	queryGetUserTelegram, args, err := r.qb.
+		Select("id, ip, query_result, time_query").
+		From("user_request_history").
+		Where(sq.Eq{"userid": userDb.Id}).
+		GroupBy("id", "ip", "query_result").
+		ToSql()
+
+	if err != nil {
+		return HistoryUser{}, err
+	}
+
+	rows, errDB := r.db.Query(queryGetUserTelegram, args...)
+	defer rows.Close()
+	if errDB != nil {
+		return HistoryUser{}, errDB
+	}
+
+	for rows.Next() {
+		var id int
+		var ip, query, timeQuery string
+		errScan := rows.Scan(&id, &ip, &query, &timeQuery)
+
+		if errScan != nil {
+			return HistoryUser{}, errScan
+		}
+		listQuery.ListQuery = append(listQuery.ListQuery, UserRequestHistory{
+			id,
+			ip,
+			query,
+			timeQuery})
+	}
+
+	return listQuery, nil
 }

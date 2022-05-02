@@ -16,6 +16,6 @@ type UserRequestHistory struct {
 type UserRequests []UserRequestHistory
 
 type HistoryUser struct {
-	UserDb       `json:"user"`
-	UserRequests `json:"query"`
+	User      UserDb       `json:"user"`
+	ListQuery UserRequests `json:"query"`
 }

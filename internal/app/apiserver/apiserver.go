@@ -62,6 +62,8 @@ func (s *APIServer) configureLogger() error {
 func (s *APIServer) configureRouter() {
 	s.router.HandleFunc("/get_users", s.getListUser())
 	s.router.HandleFunc("/get_user", s.getUserById())
+	s.router.HandleFunc("/get_history_by_tg", s.getHistoryByTg())
+	s.router.HandleFunc("/history_by_id/{id}", s.deleteUserHistoryRecord()).Methods("DELETE")
 }
 
 func (s *APIServer) getListUser() http.HandlerFunc {
@@ -72,12 +74,12 @@ func (s *APIServer) getListUser() http.HandlerFunc {
 		}
 		jsonText, _ := json.MarshalIndent(listUser, "", "  ")
 
+		w.WriteHeader(http.StatusOK)
 		io.WriteString(w, string(jsonText))
 	}
 }
 
 func (s *APIServer) getUserById() http.HandlerFunc {
-
 	return func(w http.ResponseWriter, r *http.Request) {
 		u, err := url.Parse(r.RequestURI)
 		if err != nil {
@@ -107,5 +109,44 @@ func (s *APIServer) getUserById() http.HandlerFunc {
 		w.WriteHeader(http.StatusOK)
 		jsonText, _ := json.Marshal(user)
 		io.WriteString(w, string(jsonText))
+	}
+}
+
+func (s *APIServer) getHistoryByTg() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		u, err := url.Parse(r.RequestURI)
+		if err != nil {
+			s.logger.Error(err.Error())
+		}
+
+		m, err := url.ParseQuery(u.RawQuery)
+		if err != nil {
+			s.logger.Error(err.Error())
+		}
+
+		val, ok := m["id"]
+
+		if !ok {
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+
+		id, errConv := strconv.Atoi(val[0])
+		if errConv != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+
+		user, err := s.DB.GetUserRequestHistory(id)
+		jsonText, _ := json.Marshal(user)
+		w.WriteHeader(http.StatusOK)
+		io.WriteString(w, string(jsonText))
+	}
+}
+
+func (s *APIServer) deleteUserHistoryRecord() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		io.WriteString(w, "Test")
 	}
 }
