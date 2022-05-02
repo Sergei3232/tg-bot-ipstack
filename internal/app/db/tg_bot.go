@@ -375,6 +375,7 @@ func (r *repository) GetHistoryUserQuery(idUser int) (string, error) {
 	return listQueryUser, nil
 }
 
+//GetHistoryUserQueryAdmin Get a list of the user's ip search
 func (r *repository) GetHistoryUserQueryAdmin(idUser, adminId int) (string, error) {
 	var listQueryUser string
 

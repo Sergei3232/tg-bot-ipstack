@@ -9,6 +9,8 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"net/url"
+	"strconv"
 )
 
 //APIServer ...
@@ -58,8 +60,8 @@ func (s *APIServer) configureLogger() error {
 }
 
 func (s *APIServer) configureRouter() {
-	s.router.HandleFunc("/getListUser", s.getListUser())
-	s.router.HandleFunc("/getUserById/:Id", s.getUserById())
+	s.router.HandleFunc("/get_users", s.getListUser())
+	s.router.HandleFunc("/get_user", s.getUserById())
 }
 
 func (s *APIServer) getListUser() http.HandlerFunc {
@@ -77,6 +79,33 @@ func (s *APIServer) getListUser() http.HandlerFunc {
 func (s *APIServer) getUserById() http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
-		io.WriteString(w, "getUserById")
+		u, err := url.Parse(r.RequestURI)
+		if err != nil {
+			s.logger.Error(err.Error())
+		}
+
+		m, err := url.ParseQuery(u.RawQuery)
+		if err != nil {
+			s.logger.Error(err.Error())
+		}
+
+		val, ok := m["id"]
+		id, err := strconv.Atoi(val[0])
+
+		if err != nil || !ok {
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+
+		user, err := s.DB.GetUserTelegram(id)
+
+		if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+
+		w.WriteHeader(http.StatusOK)
+		jsonText, _ := json.Marshal(user)
+		io.WriteString(w, string(jsonText))
 	}
 }
