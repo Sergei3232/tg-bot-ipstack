@@ -501,3 +501,21 @@ func (r *repository) GetUserRequestHistory(idUser int) (HistoryUser, error) {
 
 	return listQuery, nil
 }
+
+func (r *repository) DeleteRecordUserHistory(id int) error {
+	queryGetUserTelegram, args, err := r.qb.
+		Delete("user_request_history").Where(sq.Eq{"id": id}).
+		ToSql()
+
+	if err != nil {
+		return err
+	}
+
+	_, errDB := r.db.Query(queryGetUserTelegram, args...)
+
+	if errDB != nil {
+		return errDB
+	}
+
+	return nil
+}

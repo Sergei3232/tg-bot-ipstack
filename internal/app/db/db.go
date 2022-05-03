@@ -21,6 +21,7 @@ type Repository interface {
 	GetHistoryUserQueryAdmin(idUser, adminId int) (string, error)
 	GetListUsers() ([]UserDb, error)
 	GetUserRequestHistory(idUser int) (HistoryUser, error)
+	DeleteRecordUserHistory(id int) error
 }
 
 type repository struct {

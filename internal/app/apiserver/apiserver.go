@@ -146,7 +146,21 @@ func (s *APIServer) getHistoryByTg() http.HandlerFunc {
 
 func (s *APIServer) deleteUserHistoryRecord() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		param := mux.Vars(r)
+		idStr := param["id"]
+
+		id, errConv := strconv.Atoi(idStr)
+		if errConv != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+		err := s.DB.DeleteRecordUserHistory(id)
+
+		if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+
 		w.WriteHeader(http.StatusOK)
-		io.WriteString(w, "Test")
 	}
 }
